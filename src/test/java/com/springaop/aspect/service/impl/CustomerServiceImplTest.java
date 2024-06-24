@@ -7,6 +7,7 @@ import com.springaop.aspect.mapper.EntityMapper;
 import com.springaop.aspect.model.Customer;
 import com.springaop.aspect.repository.CustomerRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
+@DisplayName("Tests for Customer Service methods")
 @ExtendWith(MockitoExtension.class)
 class CustomerServiceImplTest {
 
@@ -29,9 +31,10 @@ class CustomerServiceImplTest {
     @InjectMocks
     private CustomerServiceImpl customerService;
 
+    @DisplayName("Test for getCustomerList method")
     @Test
     void getCustomerList() {
-        // Given
+
         List<Customer> customerEntities = new ArrayList<>();
         Customer customer = new Customer();
         customer.setId(1L);
@@ -42,15 +45,14 @@ class CustomerServiceImplTest {
         customerDTO.setId(1L);
         customerDTOs.add(customerDTO);
 
-        // When
         Mockito.when(customerRepository.findAll()).thenReturn(customerEntities);
         Mockito.when(entityMapper.convertCustomerDTOList(customerEntities)).thenReturn(customerDTOs);
 
-        // Then
         List<CustomerDTO> result = customerService.getCustomerList();
         Assertions.assertEquals(customerDTOs, result);
     }
 
+    @DisplayName("Test for saveCustomer method")
     @Test
     void saveCustomer() {
         // Given
@@ -59,25 +61,20 @@ class CustomerServiceImplTest {
         Customer customer = new Customer();
         customer.setId(1L);
 
-        // When
         Mockito.when(entityMapper.convertCustomer(customerDTO)).thenReturn(customer);
         Mockito.when(customerRepository.save(customer)).thenReturn(customer);
         Mockito.when(entityMapper.convertCustomerDTO(customer)).thenReturn(customerDTO);
 
-        // Then
         CustomerDTO result = customerService.saveCustomer(customerDTO);
         Assertions.assertEquals(customerDTO, result);
     }
 
+    @DisplayName("Test for deleteCustomer method")
     @Test
     void deleteCustomer() {
-        // Given
         Long id = 1L;
-
-        // When
         Mockito.doNothing().when(customerRepository).deleteById(id);
 
-        // Then
         customerService.deleteCustomer(id);
         Mockito.verify(customerRepository, Mockito.times(1)).deleteById(id);
     }
